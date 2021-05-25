@@ -1,0 +1,55 @@
+cert google
+======================================
+
+# Create a certificate directory
+mkdir ~/.certs
+
+# Create a new database in the certs dir (dont forget to enter your pass phrase!)
+certutil -N -d ~/.certs 
+
+# Create three files for the cert chain
+touch ~/.certs/google ~/.certs/geotrust ~/.certs/equifax
+
+# Copy the cert chain for smtp.google.com:465 over to my_certs file (don't forget the -showcerts option, CTRL + C to end this command)
+openssl s_client -showcerts -connect smtp.gmail.com:465 > ~/.certs/my_certs
+
+
+=============================
+
+
+# Open your my_certs file you made earlier and copy the google cert (usually the first one)
+nano ~/.certs/my_certs
+
+# Open your google file, paste the google cert that you just copied, and save and close
+nano ~/.certs/google
+
+# Open your my_certs file you made earlier and copy the geotrust cert (usually the second one)
+nano ~/.certs/my_certs
+
+# Open your geotrust file, paste the geotrust cert that you just copied, and save and close
+nano ~/.certs/geotrust
+
+# Open your my_certs file you made earlier and copy the equifax cert (usually the third one)
+nano ~/.certs/my_certs
+
+# Open your equifax file, paste the equifax cert that you just copied, and save and close
+nano ~/.certs/equifax
+
+========================================
+
+Now we have to import each of these certs into the db.
+
+# Import the google cert into the db
+certutil -A -n "Google Internet Authority" -t "TC,," -d ~/.certs -i ~/.certs/google
+
+# Import the geotrust cert into the db
+certutil -A -n "GeoTrust Global CA" -t "TC,," -d ~/.certs -i ~/.certs/geotrust
+
+# Import the equifax cert into the db
+certutil -A -n "Equifax Secure Certificate Authority" -t "TCP,," -d ~/.certs -i ~/.certs/equifax
+
+# Double check to make sure everything imported correctly into the db
+certutil -L -d ~/.certs
+
+==========================================
+
